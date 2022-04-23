@@ -9,27 +9,22 @@ export async function poll(
   fn: () => Promise<ActiveCall[]>,
   waitTimeSeconds: number
 ) {
-  const waitTimeMillis = waitTimeSeconds * 5000;
+  const waitTimeMillis = waitTimeSeconds * 1000;
   let shouldContinue = true;
   let lastCalls = await fn();
-  console.log(`initial calls: ${JSON.stringify(lastCalls.filter(x=>x.TimeReceived))}`)
-  let tries = 0;
+  let newCalls: ActiveCall[] = []
+
   while (shouldContinue) {
-    console.log("try " + tries++);
     try {
       const activeCalls = await fn();
-      // TODO:Recur this
-      if (activeCalls[0].TimeReceived !== lastCalls[0].TimeReceived) {
-        console.log("active: "+activeCalls[0]);
-        console.log("last: "+lastCalls[0]);
+      if (activeCalls[0].TimeReceived > lastCalls[0].TimeReceived) {
+        // set newCalls to those more recent than the most recent lastCall 
+        newCalls = activeCalls.filter(c=>c.TimeReceived > lastCalls[0].TimeReceived)
+        console.log(`new calls ` + JSON.stringify(newCalls))
         lastCalls = activeCalls;
-        console.log(activeCalls);
-      } else {
-        console.log("no new calls...");
       }
       // Sleep
       await new Promise((resolve) => setTimeout(resolve, waitTimeMillis));
-      console.log("promise resolved...done sleeping");
     } catch (e) {
       console.log(e);
       shouldContinue = false;

@@ -1,8 +1,8 @@
 /**
- * Represents an ActiveCall
+ * @description Represents an ActiveCall
  */
 export type ActiveCall = {
-  TimeReceived:string,
+  TimeReceived:Date,
   Agency:string,
   DispatchArea:string,
   Unit:string,

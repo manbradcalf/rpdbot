@@ -2,7 +2,7 @@ import {
   Document,
   DOMParser,
   Node,
-} from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
+} from "./deps.ts";
 
 import { ActiveCall } from "./ActiveCall.ts";
 
@@ -12,7 +12,7 @@ import { ActiveCall } from "./ActiveCall.ts";
  */
 function mapRowDataToActiveCall(activeCallProperties: string[]): ActiveCall {
   return {
-    TimeReceived: activeCallProperties[0],
+    TimeReceived: new Date(activeCallProperties[0]),
     Agency: activeCallProperties[1],
     DispatchArea: activeCallProperties[2],
     Unit: activeCallProperties[3],
@@ -67,6 +67,3 @@ export async function fetchActiveCalls(): Promise<ActiveCall[]> {
   return activeCalls 
 }
 
-let activeCalls: ActiveCall[] = await fetchActiveCalls();
-let times = activeCalls.filter(x=>x.TimeReceived);
-console.log(times)
